@@ -6,6 +6,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Users List</title>
+    
+     <%
+			    String register = (String) session.getAttribute("register");
+			    session.removeAttribute("register");
+			
+			    String updateuser = (String) session.getAttribute("updateuser");
+			    session.removeAttribute("updateuser");
+			
+			    String deleteuser = (String) session.getAttribute("deleteuser");
+			    session.removeAttribute("deleteuser");
+			    
+			    String undelete=(String) session.getAttribute("deleteuser_error");
+			    session.removeAttribute("deleteuser_error");
+			
+			 
+			%>
+			
+			<script>
+			    window.onload = function() {
+			        var messageNon = "<%= register %>";
+			        var messageDel = "<%= updateuser %>";
+			        var message = "<%= deleteuser %>";
+			        var manage="<%= undelete%>";
+			        
+			       
+			
+			        if (messageNon && messageNon !== "null") {
+			            alert(messageNon);
+			        }
+			
+			        if (messageDel && messageDel !== "null") {
+			            alert(messageDel);
+			        }
+			
+			        if (message && message !== "null") {
+			            alert(message);
+			        }
+			        if (manage && manage !== "null") {
+			            alert(manage);
+			        }
+			
+			      
+			    };
+			</script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;

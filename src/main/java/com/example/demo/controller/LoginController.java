@@ -48,6 +48,7 @@ public class LoginController {
         	redirectAttributes.addFlashAttribute("message", "Invalid_Credentials");
             return "redirect:/login?error=invalid_credentials";
         }
+        
     }
 }
 

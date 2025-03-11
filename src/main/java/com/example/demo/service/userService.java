@@ -94,4 +94,11 @@ public class userService {
 	    public Books getBookById(int bookId) {
 	        return br.findById(bookId).orElse(null);
 	    }
+	    public boolean hasBorrowedBooks(int userid) {
+	        // ✅ Check if any record exists for the given user in borrowed books
+	        return bbr.countByUserId(userid) > 0;
+	    }
+
+       
+
 }

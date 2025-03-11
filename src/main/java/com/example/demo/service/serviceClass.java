@@ -45,23 +45,7 @@ public class serviceClass {
 	    }
 	}
 	
-	
 
-	    
-	
-
-	 
-		   
-//		    if (repo1.existsById(book.getBookid())) {
-//		        return false; 
-//		    }
-//
-//		    else{
-//		    	repo1.save(book) ;
-//		    	return true;
-//		    }
-//		}
-	 
 	 
 	 
 	  //delete the book
@@ -128,7 +112,8 @@ public class serviceClass {
 			
 			return repo1.findAll();
 			}
-
+		
+		
 
 
 

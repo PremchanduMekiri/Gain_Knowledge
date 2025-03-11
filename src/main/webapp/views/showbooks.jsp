@@ -8,42 +8,53 @@
     <meta charset="UTF-8">
     <title>Book List</title>
     
-    <script>
-    
-  
-   
-    window.onload = function() {
-        var messageNon = "<%= session.getAttribute("message_non") %>";
-        var messageDel = "<%= session.getAttribute("message_del") %>";
-        var message = "<%= session.getAttribute("message") %>";
-        var lowquant="<%= session.getAttribute("lowquant")%>;
-        var bookupdated="<%= session.getAttribute("Book_updated")%>";
-       
-        if (messageNon && messageNon !== "null") {
-            alert(messageNon);
-            <% session.removeAttribute("message_non"); %>  // Clear message after showing
-        }
-
-        if (messageDel && messageDel !== "null") {
-            alert(messageDel);
-            <% session.removeAttribute("message_del"); %>  // Clear message after showing
-        }
-        if (message && message !== "null") {
-            alert(message);
-            <% session.removeAttribute("message"); %>  // Clear message after showing it
-        }
-        if(lowquant && lowquant != "null"){
-        	alert(lowquant);
-        	<%session.removeAttribute("lowquant");%>
-        }
-        if(bookupdated && bookupdated != "null"){
-        	alert(bookupdated);
-        	<% session.removeAttribute("Book_updated"); %>
-        }
-    };
-
-    
-</script>
+	    	 <%
+			    String messageNon = (String) session.getAttribute("message_non");
+			    session.removeAttribute("message_non");
+			
+			    String messageDel = (String) session.getAttribute("message_del");
+			    session.removeAttribute("message_del");
+			
+			    String message = (String) session.getAttribute("message");
+			    session.removeAttribute("message");
+			
+			    String lowquant = (String) session.getAttribute("lowquant");
+			    session.removeAttribute("lowquant");
+			
+			    String bookupdated = (String) session.getAttribute("updated");
+			    session.removeAttribute("updated");
+			%>
+			
+			<script>
+			    window.onload = function() {
+			        var messageNon = "<%= messageNon %>";
+			        var messageDel = "<%= messageDel %>";
+			        var message = "<%= message %>";
+			        var lowquant = "<%= lowquant %>";
+			        var bookupdated = "<%= bookupdated %>";
+			
+			        if (messageNon && messageNon !== "null") {
+			            alert(messageNon);
+			        }
+			
+			        if (messageDel && messageDel !== "null") {
+			            alert(messageDel);
+			        }
+			
+			        if (message && message !== "null") {
+			            alert(message);
+			        }
+			
+			        if (lowquant && lowquant !== "null") {
+			            alert(lowquant);
+			        }
+			
+			        if (bookupdated && bookupdated !== "null") {
+			            alert(bookupdated);
+			        }
+			    };
+			</script>
+     
     <style>
         /* Table Styling */
         body{

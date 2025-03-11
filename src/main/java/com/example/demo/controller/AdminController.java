@@ -134,6 +134,7 @@ public class AdminController {
 
             // ✅ Save book to DB
             userservice.addbooks(book);
+           
             request.getSession().setAttribute("message", "Book added successfully");
             
         } catch (Exception e) {
@@ -179,6 +180,7 @@ public class AdminController {
         Books book = userservice.getBookById(bookid);
         if(book.getRetrivalqauantity()>0) {
         	request.getSession().setAttribute("message_non","Make_ensure_Retrival_Quanttity_is_0");
+        	
         	return "redirect:/admin/bookslist?error=u_cant_delete_book";
         	
         }
@@ -196,7 +198,7 @@ public class AdminController {
         }
     	if(quantity<=0) {
     		request.getSession().setAttribute("lowquant","Enter_the_valid_Quantity");
-    		return "redirect:/bookslist?error=enter valid quantity";
+    		return "redirect:/admin/bookslist?error=enter valid quantity";
     	}
     	userservice.updateBookQuantity(bookid, quantity);
     	request.getSession().setAttribute("updated", "Book_updated");
@@ -205,6 +207,7 @@ public class AdminController {
 
 
     // Show Users List
+    
     @GetMapping("/showuserslist")
     public String showUsers(RedirectAttributes model, HttpServletRequest request) {
         if (!isAdminLoggedIn(request)) {
@@ -238,6 +241,7 @@ public class AdminController {
         	return "redirect:/login";
         }
         userservice.registerUser(user);
+       request.getSession().setAttribute("register", "user_registered_sucessfully");
         return "redirect:/admin/showuserslist";
     }
     @GetMapping("/updateUser")
@@ -251,6 +255,7 @@ public class AdminController {
     	}
     	
     	model.addAttribute("user",user);
+    	
     	return "updateuserpage";
     }
     
@@ -267,6 +272,7 @@ public class AdminController {
     	    }
 
     	    userservice.updateUser(existingUser, user);  // Updating existingUser with new details
+    	    request.getSession().setAttribute("updateuser", "User_updated_sucessfully");
 
     	    return "redirect:/admin/showuserslist";
     	}
@@ -278,7 +284,16 @@ public class AdminController {
         if (!isAdminLoggedIn(request)) {
         	return "redirect:/";
         }
+        boolean hasBorrowedBooks = us.hasBorrowedBooks(userid);
+
+        if (hasBorrowedBooks) {
+            // ✅ Step 2: Prevent deletion and show a message
+            request.getSession().setAttribute("deleteuser_error", "User cannot be deleted because they have borrowed books.");
+            return "redirect:/admin/showuserslist";
+        }
+        
         userservice.deleteUserById(userid);
+        request.getSession().setAttribute("deleteuser", "User_deleted_sucessfully");
         return "redirect:/admin/showuserslist";
     }
     

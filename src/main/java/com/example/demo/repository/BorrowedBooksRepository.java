@@ -10,9 +10,13 @@ import com.example.demo.Entity.BorrowedBooksId;
 public interface BorrowedBooksRepository extends JpaRepository<BorrowedBooks, BorrowedBooksId>{
 	@Query("SELECT COUNT(b) FROM BorrowedBooks b WHERE b.id.userId = :userId")
 	int countTotalBorrowedBooksByUser(@Param("userId") int userId);
+
+	  @Query("SELECT COUNT(b) FROM BorrowedBooks b WHERE b.id.userId = :userid")
+	    long countByUserId(@Param("userid") int userid);
+	}
 	
 	
 
 
 
-}
+

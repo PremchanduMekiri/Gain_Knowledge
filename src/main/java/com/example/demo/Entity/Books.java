@@ -15,5 +15,6 @@ public class Books {
 	private int availablequantity;
 	private int retrivalqauantity;
     private String pdf;
+    private String imagePath;
 
 }
