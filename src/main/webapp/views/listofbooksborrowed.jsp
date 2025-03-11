@@ -55,7 +55,6 @@
   <table border="1">
     <tr>
         <th>Book ID</th>
-        <th>User id</th>
        
         
     </tr>
@@ -66,7 +65,7 @@
         <% for (BorrowedBooks book : books) { %>
             <tr>
                 <td><%= book.getId().getBookId() %></td>
-                <td><%=book.getId() %>
+               
                 
             </tr>
         <% } %>

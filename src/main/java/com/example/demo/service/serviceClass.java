@@ -25,7 +25,7 @@ import java.nio.file.StandardCopyOption;
 
 
 @Service
-public class service {
+public class serviceClass {
 	
 	@Autowired
 	private repository repo;

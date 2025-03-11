@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,13 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.Entity.Books;
-import com.example.demo.Entity.BorrowedBooks;
 import com.example.demo.Entity.Users;
 import com.example.demo.service.service;
+import com.example.demo.service.serviceClass;
 import com.example.demo.service.userService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -32,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 public class AdminController {
 
     @Autowired
-    private service userservice;
+    private serviceClass userservice;
     @Autowired
     private userService us;
 
@@ -274,7 +273,7 @@ public class AdminController {
 
 
     // Delete User
-    @PostMapping("/deleteUser")
+    @ PostMapping("/deleteUser")
     public String deleteUser(@RequestParam int userid, HttpServletRequest request) {
         if (!isAdminLoggedIn(request)) {
         	return "redirect:/";
