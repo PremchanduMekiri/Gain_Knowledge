@@ -119,6 +119,18 @@
 		.logout-btn:hover {
 		    background: #a0522d; /* Darker shade of Saddle Brown */
 		}
+		.query12{
+		display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #8b6f47; /* Coffee brown */
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
         
     </style>
 </head>
@@ -156,6 +168,7 @@
 
 <br>
 <a href="booksList" class="library-link">📚 Go to Library</a>
+<a href="chat" class="query12"> Write a Query</a>
 
 <div class="logout-container">
     <a href="logout12" class="logout-btn">🚪 Logout</a>

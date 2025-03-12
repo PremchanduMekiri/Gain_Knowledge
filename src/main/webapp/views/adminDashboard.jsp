@@ -114,6 +114,8 @@
         <a href="bookslist"><img src="/images/books.webp" class="icon"> View Available Books</a>
         <a href="showuserslist"><img src="/images/download1.jpg" class="icon"> View Users List</a>
         <!-- <a href="borrowedbookslist"><img src="/images/download3.png" class="icon"> View Borrowed Books</a> -->
+     	<a href="chat"><img src="/images/queries.png" class="icon">View Queries</a>  
+     
         <div class="logout-container">
     <a href="logout1" class="logout-btn">🚪 Logout</a>
 </div>

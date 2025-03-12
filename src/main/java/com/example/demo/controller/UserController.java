@@ -11,7 +11,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.Entity.Books;
 import com.example.demo.Entity.BorrowedBooks;
 import com.example.demo.Entity.BorrowedBooksId;
+import com.example.demo.Entity.Queries;
 import com.example.demo.Entity.Users;
+import com.example.demo.service.queryService;
 import com.example.demo.service.userService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +25,9 @@ public class UserController {
 
     @Autowired
     private userService userService;
+    
+    @Autowired
+    private queryService userqQueryService;
 
     // Check User Session
     private boolean isUserLoggedIn(HttpServletRequest request) {
@@ -137,9 +142,55 @@ public class UserController {
         return "redirect:/user/dashboarduser";
     }
     
+    @GetMapping("/chat")
+    public String userChat(Model model, HttpSession session) {
+        Users user = (Users) session.getAttribute("loggedInUser");
+
+        if (user == null) {
+            return "redirect:/login?error=notloggedin";
+        }
+
+        List<Queries> userQueries = userqQueryService.getUserQueries(user.getId());
+        model.addAttribute("queries", userQueries);
+
+        return "userChat";
+    }
+
+    @PostMapping("/inputquery")
+    public String inputQuery(@RequestParam String query, HttpSession session) {
+        Users user = (Users) session.getAttribute("loggedInUser");
+
+        if (user == null) {
+            return "redirect:/login?error=notloggedin";
+        }
+
+        Queries newQuery = new Queries();
+        newQuery.setUserid(user.getId());
+        newQuery.setQuery(query);
+        newQuery.setReply("");
+
+        userqQueryService.saveQuery(newQuery);
+        return "redirect:/user/chat";
+    }
     
-   
+    @GetMapping("/dashboarduser124")
+    public String back() {
+        return"redirect:/user/dashboarduser";
+    }
+    
+    @GetMapping("/clearChat")
+    public String clearUserChat(HttpSession session) {
+        Users user = (Users) session.getAttribute("loggedInUser");
+
+        if (user != null) {
+            userqQueryService.clearUserQueries(user.getId());
+        }
+
+        return "redirect:/user/chat";
+    }
 }
+    
+    
 
 
 

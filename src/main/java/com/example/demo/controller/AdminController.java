@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.concurrent.Flow.Publisher;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.Entity.Books;
+import com.example.demo.Entity.Queries;
 import com.example.demo.Entity.Users;
+import com.example.demo.service.queryService;
 import com.example.demo.service.serviceClass;
 import com.example.demo.service.userService;
 
@@ -32,8 +35,13 @@ public class AdminController {
 
     @Autowired
     private serviceClass userservice;
+    
     @Autowired
     private userService us;
+    
+    @Autowired
+    private queryService adminService;
+    
 
     // Check Admin Session
     private boolean isAdminLoggedIn(HttpServletRequest request) {
@@ -385,6 +393,34 @@ public class AdminController {
     @GetMapping("back")
     public String back() {
         return "redirect:/admin/dashboardadmin";
+    }
+    
+    
+    @GetMapping("/chat")
+    public String adminChat(Model model) {
+        List<Queries> allQueries = adminService.getAllQueries();
+        model.addAttribute("queries", allQueries);
+        return "adminChat";
+    }
+
+    @PostMapping("/replyquery")
+    public String replyQuery(@RequestParam int queryId, @RequestParam String reply) {
+        adminService.updateQueryReply(queryId, reply);
+        return "redirect:/admin/chat";
+    }
+    
+    @GetMapping("/admindashboard")
+    public String backbu() {
+        return "redirect:/admin/dashboardadmin";
+    }
+    
+    @GetMapping("clearChat")
+    public String clearch(HttpServletRequest request) {
+        if (!isAdminLoggedIn(request)) {
+            return "redirect:/";
+        }
+        adminService.clearAllQueries();
+        return "redirect:/admin/chat";
     }
     
     }
