@@ -27,8 +27,8 @@ public class LoginController {
 
     
     @PostMapping("/adminLogin")
-    public String adminLogin(@RequestParam String userid, @RequestParam String password, HttpServletRequest request,RedirectAttributes redirectAttributes) {
-        if ("21645A0323".equalsIgnoreCase(userid) && "prem@2002".equals(password)) {
+    public String adminLogin(@RequestParam int userid, @RequestParam String password, HttpServletRequest request,RedirectAttributes redirectAttributes) {
+        if (216450323 == userid && "prem@2002".equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("adminUser", userid);
             return "redirect:admin/dashboardadmin";
@@ -37,9 +37,15 @@ public class LoginController {
             return "redirect:/login?error=invalid_credentials";
         }
     }
+    
+   
     @PostMapping("/userLogin")
     public String userLogin(@RequestParam int userid, @RequestParam String password, HttpServletRequest request,RedirectAttributes redirectAttributes) {
+       
+        
+        
         Users user = userservice.getUserById(userid);
+        
         if (user != null && user.getPassword().equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("loggedInUser", user);

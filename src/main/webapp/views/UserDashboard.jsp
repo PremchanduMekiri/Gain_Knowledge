@@ -15,6 +15,7 @@
             background-color: #f5f5dc; /* Light tan background */
             margin: 0;
             padding: 0;
+            justify-content: center;
         }
         .container {
             width: 80%;
@@ -62,7 +63,66 @@
         .btn:hover {
             background-color: #a0522d; /* Sienna */
         }
+       /* Centering the logout button */
+		.logout-container {
+		    display: flex;
+		    justify-content: center; /* Horizontally center */
+		    margin-top: 30px;
+		}
+		
+		/* Styled Logout Button */
+		.logout-btn {
+		    padding: 12px 20px;
+		    background: #8b4513; /* Saddle Brown (matching page theme) */
+		    color: white;
+		    text-decoration: none;
+		    font-size: 18px;
+		    font-weight: bold;
+		    border-radius: 5px;
+		    border: none;
+		    cursor: pointer;
+		    transition: background 0.3s ease;
+		}
+
+		.logout-btn:hover {
+		    background: #a0522d; /* Darker shade of Saddle Brown */
+		}
+		       
     </style>
+    
+     <%
+			    String messageNon = (String) session.getAttribute("returned");
+			    session.removeAttribute("returned");
+			
+			    String messageDel = (String) session.getAttribute("borrowed");
+			    session.removeAttribute("borrowed");
+			
+			    String message = (String) session.getAttribute("borrowunabel");
+			    session.removeAttribute("borrowunabel");
+			
+			%>
+			
+			<script>
+			    window.onload = function() {
+			        var messageNon = "<%= messageNon %>";
+			        var messageDel = "<%= messageDel %>";
+			        var message = "<%= message %>";
+			       
+			        if (messageNon && messageNon !== "null") {
+			            alert(messageNon);
+			        }
+			
+			        if (messageDel && messageDel !== "null") {
+			            alert(messageDel);
+			        }
+			
+			        if (message && message !== "null") {
+			            alert(message);
+			        }
+			
+			      
+			    };
+			</script>
 </head>
 <body>
     <div class="container">
@@ -122,22 +182,23 @@
                 <tr>
                     <th>Book ID</th>
                    
-                    <th>Read Book</th>
+                 <!--    <th>Read Book</th> -->
                     <th>Action</th>
                 </tr>
                 <% for (BorrowedBooks borrowedBook : borrowedBooks) { %>
                     <tr>
                         <td><%= borrowedBook.getId().getBookId() %></td>
                        
-                        <td>
+                      <%--   <td>
                         	  <% if (borrowedBook.getPdf() != null && !borrowedBook.getPdf().isEmpty()) { %>
 				            	<a href="/books/pdf/<%= borrowedBook.getPdf() %>" target="_blank">View PDF</a>
-				        	  <% } else { %>
+				        	  <% } 
+                        	  else { %>
 				            	No PDF Available
 				        		<% } %>
                         
                         
-                        </td>
+                        </td> --%>
                         <td>
                            <form action="/user/returnBook" method="post">
 							    <input type="hidden" name="bookid" value="<%=borrowedBook.getId().getBookId()%>">
@@ -148,7 +209,11 @@
                 <% } %>
             </table>
         <% } %>
-    </div>
+           </div>
+        <div class="logout-container">
+    	<a href="logout123" class="logout-btn">🚪 Previous_page</a>
+		</div>
+        
 </body>
 </html>
 

@@ -73,6 +73,31 @@
             height: 30px;
             margin-right: 15px; /* ✅ Ensure proper spacing between icon and text */
         }
+        /* Centering the logout button */
+		.logout-container {
+		    display: flex;
+		    justify-content: center; /* Horizontally center */
+		    margin-top: 30px;
+		}
+		
+		/* Styled Logout Button */
+		.logout-btn {
+		    padding: 12px 20px;
+		    background: #8b4513; /* Saddle Brown (matching page theme) */
+		    color: white;
+		    text-decoration: none;
+		    font-size: 18px;
+		    font-weight: bold;
+		    border-radius: 5px;
+		    border: none;
+		    cursor: pointer;
+		    transition: background 0.3s ease;
+		}
+		
+		.logout-btn:hover {
+		    background: #a0522d; /* Darker shade of Saddle Brown */
+		}
+		        
     </style>
 </head>
 <body>
@@ -88,8 +113,13 @@
     <div class="dashboard-links">
         <a href="bookslist"><img src="/images/books.webp" class="icon"> View Available Books</a>
         <a href="showuserslist"><img src="/images/download1.jpg" class="icon"> View Users List</a>
-        <a href="borrowedbookslist"><img src="/images/download3.png" class="icon"> View Borrowed Books</a>
-        <a href="logout"><img src="/images/logout.jpg" class="icon"> Logout</a>
+        <!-- <a href="borrowedbookslist"><img src="/images/download3.png" class="icon"> View Borrowed Books</a> -->
+        <div class="logout-container">
+    <a href="logout1" class="logout-btn">🚪 Logout</a>
+</div>
+        
+    	<!-- <a href="logout1" class="logout-btn">🚪 Logout</a> -->
+		
     </div>
 </div>
 

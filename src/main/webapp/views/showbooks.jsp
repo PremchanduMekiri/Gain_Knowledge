@@ -119,7 +119,32 @@
         .add-books-link:hover {
             background-color: #A0522D; /* Sienna */
         }
-    </style>
+        /* Centering the logout button */
+		.logout-container {
+		    display: flex;
+		    justify-content: center; /* Horizontally center */
+		    margin-top: 30px;
+		}
+		
+		/* Styled Logout Button */
+		.logout-btn {
+		    padding: 12px 20px;
+		    background: #8b4513; /* Saddle Brown (matching page theme) */
+		    color: white;
+		    text-decoration: none;
+		    font-size: 18px;
+		    font-weight: bold;
+		    border-radius: 5px;
+		    border: none;
+		    cursor: pointer;
+		    transition: background 0.3s ease;
+		}
+		
+		.logout-btn:hover {
+		    background: #a0522d; /* Darker shade of Saddle Brown */
+		}
+		        
+		    </style>
 </head>
 <body>
     <h2 style="text-align: center; color: #8B4513;">Book List</h2>
@@ -172,5 +197,8 @@
     </table>
 
     <a href="addbooks" class="add-books-link">Add More Books to the List</a>
+   <div class="logout-container">
+    <a href="moveback" class="logout-btn">🚪 Previous_Page <a>
+   </div>
 </body>
 </html>

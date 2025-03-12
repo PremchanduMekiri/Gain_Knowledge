@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.Flow.Publisher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.Entity.Books;
 import com.example.demo.Entity.Users;
-import com.example.demo.service.service;
 import com.example.demo.service.serviceClass;
 import com.example.demo.service.userService;
 
@@ -70,14 +70,14 @@ public class AdminController {
     }
 
     //borrowed books list
-    @GetMapping("/borrowedbookslist")
-    public String borrowedbookslist(Model model,HttpServletRequest request) {
-    	 if (!isAdminLoggedIn(request)) {
-         	return "redirect:/login";
-         }
-    	model.addAttribute("books", us.borrowebookslist());
-    	return "listofbooksborrowed";
-    }
+//    @GetMapping("/borrowedbookslist")
+//    public String borrowedbookslist(Model model,HttpServletRequest request) {
+//    	 if (!isAdminLoggedIn(request)) {
+//         	return "redirect:/login";
+//         }
+//    	model.addAttribute("books", us.borrowebookslist());
+//    	return "listofbooksborrowed";
+//    }
 
     // Add New Book
     @GetMapping("/addbooks")
@@ -94,6 +94,7 @@ public class AdminController {
                           @RequestParam("availablequantity") int availablequantity,
                           @RequestParam(value = "retrivalqauantity", required = false, defaultValue = "0") int retrivalqauantity,
                           @RequestParam("pdf") MultipartFile pdfFile,
+                          @RequestParam("image") MultipartFile imageFile,
                           HttpServletRequest request) {
         
         if (!isAdminLoggedIn(request)) {
@@ -108,19 +109,23 @@ public class AdminController {
             book.setAuthor(author);
             book.setAvailablequantity(availablequantity);
             book.setRetrivalqauantity(retrivalqauantity);
+           
+              
 
             // ✅ Process PDF File
             if (pdfFile != null && !pdfFile.isEmpty()) {
                 String uploadDir ="src/main/resources/static/books/pdf/";
-                
+               
                 // Ensure directory exists
                 File dir = new File(uploadDir);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
+                
 
                 // Generate a unique filename
                 String fileName = bookid + "_" + pdfFile.getOriginalFilename();
+                String imagePath = request.getServletContext().getRealPath("/books/pdf/");
                 Path filePath = Paths.get(uploadDir + fileName);
 
                 // Save file to system
@@ -130,6 +135,28 @@ public class AdminController {
                 book.setPdf(fileName);
             } else {
                 book.setPdf(null); // Set to null if no file is uploaded
+            }
+         // ✅ Process Image File
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageUploadDir = "src/main/resources/static/books/images/";
+
+                // Ensure directory exists
+                File imageDir = new File(imageUploadDir);
+                if (!imageDir.exists()) {
+                    imageDir.mkdirs();
+                }
+
+                // Generate a unique filename for Image
+                String imageFileName = bookid + "_" + imageFile.getOriginalFilename();
+                Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
+
+                // Save Image file to system
+                Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // ✅ Store only file name (not full path)
+                book.setImagePath(imageFileName);
+            } else {
+                book.setImagePath(null); // Set to null if no file is uploaded
             }
 
             // ✅ Save book to DB
@@ -168,6 +195,55 @@ public class AdminController {
 //            }
 //            }
 //        }
+    
+    
+//    @PostMapping("/addBookservlet")
+//    public String addBook(@RequestParam("bookid") int bookId,
+//                          @RequestParam("bookname") String bookName,
+//                          @RequestParam("author") String author,
+//                          @RequestParam("availablequantity") int quantity,
+//                          @RequestParam("pdf") MultipartFile pdfFile,
+//                          @RequestParam("image_path") MultipartFile imageFile,
+//                          HttpServletRequest request) {
+//        try {
+//            // Define the folder paths dynamically
+//            String pdfPath = request.getServletContext().getRealPath("/books/pdf/");
+//            String imagePath = request.getServletContext().getRealPath("/books/images/");
+//
+//            // Create directories if they don’t exist
+//            File pdfDir = new File(pdfPath);
+//            File imageDir = new File(imagePath);
+//            if (!pdfDir.exists()) pdfDir.mkdirs();
+//            if (!imageDir.exists()) imageDir.mkdirs();
+//
+//            // Ensure files are not empty before proceeding
+//            if (pdfFile.isEmpty() || imageFile.isEmpty()) {
+//                System.out.println("Error: One of the files is missing.");
+//                return "error";
+//            }
+//
+//            // Save PDF with Book ID as Name
+//            String pdfFileName = bookId + "_" + pdfFile.getOriginalFilename();
+//            File pdfDest = new File(pdfDir, pdfFileName);
+//            pdfFile.transferTo(pdfDest);
+//
+//            // Save Image with Book ID as Name
+//            String imageFileName = bookId + "_" + imageFile.getOriginalFilename();
+//            File imageDest = new File(imageDir, imageFileName);
+//            imageFile.transferTo(imageDest);
+//
+//            // Save Book Details in Database
+//            Books book = new Books(bookId, bookName, author, quantity, pdfFileName, imageFileName);
+//            userservice.addbooks(book);
+//
+//            return "redirect:/admin/updatedbookslist";  // Redirect to updated book list
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "error";  // Redirect to error page
+//        }
+//    }
+
+
 
 
 
@@ -295,6 +371,20 @@ public class AdminController {
         userservice.deleteUserById(userid);
         request.getSession().setAttribute("deleteuser", "User_deleted_sucessfully");
         return "redirect:/admin/showuserslist";
+    }
+    
+    @GetMapping("/logout1")
+    public String logout() {
+        return"redirect:/login";
+    }
+    
+    @GetMapping("/moveback")
+    public String moveback() {
+        return "redirect:/admin/dashboardadmin";
+    }
+    @GetMapping("back")
+    public String back() {
+        return "redirect:/admin/dashboardadmin";
     }
     
     }

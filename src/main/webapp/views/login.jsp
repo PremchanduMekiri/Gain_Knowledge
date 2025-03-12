@@ -142,7 +142,7 @@
                 </select>
 
                 <label for="userid">User ID:</label>
-                <input type="text" id="userid" name="userid" required>
+                <input type="number" id="userid" name="userid" required>
 
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
@@ -177,6 +177,8 @@
     // Set action on page load
     updateAction();
 </script>
+
+
 
 </body>
 </html>

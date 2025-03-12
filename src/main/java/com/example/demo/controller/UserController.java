@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +41,26 @@ public class UserController {
     
     //see books list
     @GetMapping("/dashboarduser")
+    public String readBooks(HttpServletRequest request, Model model) {
+        Users user = (Users) request.getSession().getAttribute("loggedInUser");
+
+        if (user == null) {
+            System.out.println("there is no userid");
+            return "redirect:/login"; // Redirect if user not logged in
+        }
+        
+        Integer userId = user.getId(); // Get the user's ID from the User object
+
+        System.out.println("User ID retrieved: " + userId);
+
+        List<Books> borrowedBooks = userService.getBorrowedBooksByUser(userId);
+        model.addAttribute("borrowedBooks", borrowedBooks);
+
+        return "Readbooks"; // JSP file for displaying borrowed books
+    }
+    
+    
+    @GetMapping("/booksList")
     public String seebooksList(HttpServletRequest request, Model model) {
         if (!isUserLoggedIn(request)) {
             return "redirect:/login";
@@ -52,7 +74,7 @@ public class UserController {
 
 
     @PostMapping("/borrowBook")
-    public String borrowBook(@RequestParam int bookid, HttpSession session) {
+    public String borrowBook(@RequestParam int bookid, HttpSession session,HttpServletRequest request) {
         Users user = (Users) session.getAttribute("loggedInUser"); 
 
         if (user == null) {
@@ -66,26 +88,27 @@ public class UserController {
         BorrowedBooks borrowedBook = userService.getBorrowedBookById(borrowedBooksId);
 
         if (borrowedBook != null) {
-            return "redirect:/user/dashboarduser?error=alreadyborrowed"; // Prevent multiple borrowings
+            request.getSession().setAttribute("borrowunabel","Book already borrowed"); //alertmeassagem
+            return "redirect:/user/booksList?error=alreadyborrowed"; 
         }
 
         Books book = userService.getBookById(bookid);  
         if (book == null) {
-            return "redirect:/user/dashboarduser?error=booknotfound";
+            return "redirect:/user/booksList?error=booknotfound";
         }
 
-        // Save borrowed book
+        
         borrowedBook = new BorrowedBooks(borrowedBooksId, book.getPdf());
-        userService.saveBorrowedBook(borrowedBook);
-
-        // Decrease available quantity
-        userService.decreaseBookQuantity(bookid);  
-
-        return "redirect:/user/dashboarduser?success=bookborrowed";
+        userService.saveBorrowedBook(borrowedBook);  // Save borrowed book
+        
+        userService.decreaseBookQuantity(bookid);    // Decrease available quantity
+        
+        request.getSession().setAttribute("borrowed", "borrowed book sucessfully");
+        return "redirect:/user/booksList?success=bookborrowed";
     }
 
     @PostMapping("/returnBook")
-    public String returnBook(@RequestParam int bookid, HttpSession session) {
+    public String returnBook(@RequestParam int bookid, HttpSession session,HttpServletRequest request) {
         Users user = (Users) session.getAttribute("loggedInUser");
 
         if (user == null) {
@@ -95,17 +118,31 @@ public class UserController {
         int userid = user.getId();
         BorrowedBooksId borrowedBooksId = new BorrowedBooksId(userid, bookid);
         
-        // ✅ Check if the book exists in BorrowedBooks before deleting
+      
         if (userService.getBorrowedBookById(borrowedBooksId) != null) {
             userService.deletbookbyid(borrowedBooksId);
             userService.increaseBookQuantity(bookid);
+            request.getSession().setAttribute("returned", "returned book sucessfully");
         }
-
+       
+        return "redirect:/user/booksList";
+    }
+    
+    @GetMapping("/logout12")
+    public String logout() {
+        return "redirect:/login";
+    }
+    @GetMapping("/logout123")
+    public String logoutback() {
         return "redirect:/user/dashboarduser";
     }
-
-
+    
+    
+   
 }
+
+
+
 
 
 

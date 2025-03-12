@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +15,13 @@ public interface BorrowedBooksRepository extends JpaRepository<BorrowedBooks, Bo
 
 	  @Query("SELECT COUNT(b) FROM BorrowedBooks b WHERE b.id.userId = :userid")
 	    long countByUserId(@Param("userid") int userid);
+	  
+	 
+	  @Query(value = "SELECT * FROM borrowed_books WHERE user_id = :userId", nativeQuery = true)
+	    List<BorrowedBooks> findByIdUserId(@Param("userId") int userId);
+
+   
+	  
 	}
 	
 	

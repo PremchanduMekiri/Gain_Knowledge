@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,6 +98,19 @@ public class userService {
 	    public boolean hasBorrowedBooks(int userid) {
 	        // ✅ Check if any record exists for the given user in borrowed books
 	        return bbr.countByUserId(userid) > 0;
+	    }
+	    
+	    
+	    public List<Books> getBorrowedBooksByUser(int userId) {
+	        List<BorrowedBooks> borrowedBooks = bbr.findByIdUserId(userId);
+	        
+	        // Extract book IDs from borrowed books
+	        List<Integer> bookIds = borrowedBooks.stream()
+	                                             .map(b -> b.getId().getBookId())
+	                                             .collect(Collectors.toList());
+
+	        // Fetch book details from BooksRepository
+	        return br.findAllById(bookIds);
 	    }
 
        
