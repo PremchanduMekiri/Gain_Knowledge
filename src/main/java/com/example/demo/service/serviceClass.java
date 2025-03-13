@@ -33,8 +33,6 @@ public class serviceClass {
 	@Autowired
 	private BookRepo repo1;
 	
-
-	
 	public boolean addbooks(Books book) {
 	    try {
 	        repo1.save(book);
@@ -44,10 +42,7 @@ public class serviceClass {
 	        return false;
 	    }
 	}
-	
 
-	 
-	 
 	  //delete the book
 	 @Transactional
 	  public void deleteBookById(int bookId) {
@@ -101,46 +96,13 @@ public class serviceClass {
 		    repo.save(existingUser);  // Save updated user details
 		}
 	    public Books getBookById(int id) {
-	        return repo1.findById(id).orElse(null); // ✅ Returns the book or null if not found
+	        return repo1.findById(id).orElse(null); 
 	    }
 
-
-
-
 		public List<Books> getAllBooks() {
-			// TODO Auto-generated method stub
-			
 			return repo1.findAll();
 			}
-		
-		
-
-
-
-		
-
-
-
-
 	
-		
-//	    @Transactional
-//	    public String saveuser(Users user) {
-//	    	 return "repo.save(user)";
-//	    }
-		
-//		 public boolean userlogin(Users user, String userid, String password) {
-//	    if (user != null && String.valueOf(user.getId()).equals(userid) && user.getPassword().equals(password)) {
-//	        return true; 
-//	    }
-//	    else {
-//	    	return false;
-//	  
-//	    }
-//	}
-	    
-
-
 }
 
 

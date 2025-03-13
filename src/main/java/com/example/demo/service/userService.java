@@ -34,8 +34,7 @@ public class userService {
 		return books;
 		
 	}
-	
-	
+
 	public Users getUserById(int id) {
 	    return repo.findById(id).orElse(null);
 	}
@@ -45,13 +44,11 @@ public class userService {
 	        return borrowedBook.orElse(null);
 	  }
 
-	    
 	    public void saveBorrowedBook(BorrowedBooks borrowedBook) {
 	        bbr.save(borrowedBook);
 	        
 	    }
 
-	  
 	    @Transactional
 	    public void decreaseBookQuantity(int bookId) {
 	        Books book = br.findById(bookId).orElse(null);

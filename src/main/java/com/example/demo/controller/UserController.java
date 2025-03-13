@@ -34,37 +34,23 @@ public class UserController {
         HttpSession session = request.getSession(false);
         return (session != null && session.getAttribute("loggedInUser") != null);
     }
-
-    // User Dashboard
-//    @GetMapping("/dashboarduser")
-//    public String userDashboard(HttpServletRequest request) {
-//        if (!isUserLoggedIn(request)) {
-//        	return "redirect:/login?error=invalidcredentials";
-//        }
-//        return "userdashboard";
-//    }
     
-    //see books list
+    //see borrowed books list to read the books
     @GetMapping("/dashboarduser")
     public String readBooks(HttpServletRequest request, Model model) {
         Users user = (Users) request.getSession().getAttribute("loggedInUser");
-
         if (user == null) {
             System.out.println("there is no userid");
-            return "redirect:/login"; // Redirect if user not logged in
-        }
-        
-        Integer userId = user.getId(); // Get the user's ID from the User object
-
-        System.out.println("User ID retrieved: " + userId);
-
+            return "redirect:/login";
+        } 
+        Integer userId = user.getId();
         List<Books> borrowedBooks = userService.getBorrowedBooksByUser(userId);
         model.addAttribute("borrowedBooks", borrowedBooks);
 
-        return "Readbooks"; // JSP file for displaying borrowed books
+        return "Readbooks"; 
     }
     
-    
+    //Available books in the library and the borrowed books service layer for user
     @GetMapping("/booksList")
     public String seebooksList(HttpServletRequest request, Model model) {
         if (!isUserLoggedIn(request)) {
@@ -72,12 +58,12 @@ public class UserController {
         }
         
         model.addAttribute("books", userService.getAllBooks());
-        model.addAttribute("borrowedbooks", userService.borrowebookslist()); // Fixed attribute name
+        model.addAttribute("borrowedbooks", userService.borrowebookslist()); 
 
         return "UserDashboard";  // Ensure this JSP file exists
     }
 
-
+    //Borrowed book
     @PostMapping("/borrowBook")
     public String borrowBook(@RequestParam int bookid, HttpSession session,HttpServletRequest request) {
         Users user = (Users) session.getAttribute("loggedInUser"); 
@@ -93,7 +79,7 @@ public class UserController {
         BorrowedBooks borrowedBook = userService.getBorrowedBookById(borrowedBooksId);
 
         if (borrowedBook != null) {
-            request.getSession().setAttribute("borrowunabel","Book already borrowed"); //alertmeassagem
+            request.getSession().setAttribute("borrowunabel","Book already borrowed"); 
             return "redirect:/user/booksList?error=alreadyborrowed"; 
         }
 
@@ -111,7 +97,7 @@ public class UserController {
         request.getSession().setAttribute("borrowed", "borrowed book sucessfully");
         return "redirect:/user/booksList?success=bookborrowed";
     }
-
+    //return book
     @PostMapping("/returnBook")
     public String returnBook(@RequestParam int bookid, HttpSession session,HttpServletRequest request) {
         Users user = (Users) session.getAttribute("loggedInUser");
@@ -132,16 +118,17 @@ public class UserController {
        
         return "redirect:/user/booksList";
     }
-    
+    //logout
     @GetMapping("/logout12")
     public String logout() {
         return "redirect:/login";
     }
+    //back button
     @GetMapping("/logout123")
     public String logoutback() {
         return "redirect:/user/dashboarduser";
     }
-    
+    // to get the chat page with list of quries of user
     @GetMapping("/chat")
     public String userChat(Model model, HttpSession session) {
         Users user = (Users) session.getAttribute("loggedInUser");
@@ -155,7 +142,7 @@ public class UserController {
 
         return "userChat";
     }
-
+    //save the queries to database
     @PostMapping("/inputquery")
     public String inputQuery(@RequestParam String query, HttpSession session) {
         Users user = (Users) session.getAttribute("loggedInUser");
@@ -172,12 +159,12 @@ public class UserController {
         userqQueryService.saveQuery(newQuery);
         return "redirect:/user/chat";
     }
-    
+    //back button
     @GetMapping("/dashboarduser124")
     public String back() {
         return"redirect:/user/dashboarduser";
     }
-    
+    // to clear the chat
     @GetMapping("/clearChat")
     public String clearUserChat(HttpSession session) {
         Users user = (Users) session.getAttribute("loggedInUser");

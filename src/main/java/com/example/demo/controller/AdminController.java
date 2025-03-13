@@ -68,6 +68,7 @@ public class AdminController {
         return "redirect:/admin/updatedbookslist";
       
     }
+  
     @GetMapping("/updatedbookslist")
     public String listoffbooks(HttpServletRequest request) {
     	if (!isAdminLoggedIn(request)) {
@@ -76,16 +77,6 @@ public class AdminController {
        
         return "showbooks";
     }
-
-    //borrowed books list
-//    @GetMapping("/borrowedbookslist")
-//    public String borrowedbookslist(Model model,HttpServletRequest request) {
-//    	 if (!isAdminLoggedIn(request)) {
-//         	return "redirect:/login";
-//         }
-//    	model.addAttribute("books", us.borrowebookslist());
-//    	return "listofbooksborrowed";
-//    }
 
     // Add New Book
     @GetMapping("/addbooks")
@@ -110,7 +101,6 @@ public class AdminController {
         }
 
         try {
-            // ✅ Create Book Object Manually
             Books book = new Books();
             book.setBookid(bookid);
             book.setBookname(bookname);
@@ -118,56 +108,40 @@ public class AdminController {
             book.setAvailablequantity(availablequantity);
             book.setRetrivalqauantity(retrivalqauantity);
            
-              
-
-            // ✅ Process PDF File
+            //To save a pdf file as a multi part file
             if (pdfFile != null && !pdfFile.isEmpty()) {
                 String uploadDir ="src/main/resources/static/books/pdf/";
                
-                // Ensure directory exists
                 File dir = new File(uploadDir);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                
-
-                // Generate a unique filename
                 String fileName = bookid + "_" + pdfFile.getOriginalFilename();
                 String imagePath = request.getServletContext().getRealPath("/books/pdf/");
-                Path filePath = Paths.get(uploadDir + fileName);
-
-                // Save file to system
+                Path filePath = Paths.get(uploadDir + fileName);                
                 Files.copy(pdfFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                // ✅ Store only file name (not full path)
                 book.setPdf(fileName);
             } else {
-                book.setPdf(null); // Set to null if no file is uploaded
+                book.setPdf(null); 
             }
-         // ✅ Process Image File
+            // to save the image
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageUploadDir = "src/main/resources/static/books/images/";
-
-                // Ensure directory exists
+             
                 File imageDir = new File(imageUploadDir);
                 if (!imageDir.exists()) {
                     imageDir.mkdirs();
                 }
 
-                // Generate a unique filename for Image
                 String imageFileName = bookid + "_" + imageFile.getOriginalFilename();
                 Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
-
-                // Save Image file to system
                 Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
-
-                // ✅ Store only file name (not full path)
                 book.setImagePath(imageFileName);
             } else {
-                book.setImagePath(null); // Set to null if no file is uploaded
+                book.setImagePath(null); 
             }
 
-            // ✅ Save book to DB
+           
             userservice.addbooks(book);
            
             request.getSession().setAttribute("message", "Book added successfully");
@@ -180,80 +154,6 @@ public class AdminController {
         return "redirect:/admin/bookslist";
     }
     
-//    private static final String UPLOAD_DIR = "D:/Spring_MVC/demo-9/src/main/webapp/Books/";
-//
-//    @GetMapping("/addBookservlet")
-//    public void getPdf(@RequestParam("filename") String filename, HttpServletResponse response) {
-//        try {
-//            Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
-//            File file = filePath.toFile();
-//
-//            if (file.exists() && file.isFile()) {
-//                response.setContentType(MediaType.APPLICATION_PDF_VALUE);
-//                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"");
-//                Files.copy(filePath, response.getOutputStream());
-//                response.getOutputStream().flush();
-//            } else {
-//                response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
-//            }
-//        } catch (Exception e) {
-//            try {
-//                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching file");
-//            } catch (Exception ignored) {
-//            }
-//            }
-//        }
-    
-    
-//    @PostMapping("/addBookservlet")
-//    public String addBook(@RequestParam("bookid") int bookId,
-//                          @RequestParam("bookname") String bookName,
-//                          @RequestParam("author") String author,
-//                          @RequestParam("availablequantity") int quantity,
-//                          @RequestParam("pdf") MultipartFile pdfFile,
-//                          @RequestParam("image_path") MultipartFile imageFile,
-//                          HttpServletRequest request) {
-//        try {
-//            // Define the folder paths dynamically
-//            String pdfPath = request.getServletContext().getRealPath("/books/pdf/");
-//            String imagePath = request.getServletContext().getRealPath("/books/images/");
-//
-//            // Create directories if they don’t exist
-//            File pdfDir = new File(pdfPath);
-//            File imageDir = new File(imagePath);
-//            if (!pdfDir.exists()) pdfDir.mkdirs();
-//            if (!imageDir.exists()) imageDir.mkdirs();
-//
-//            // Ensure files are not empty before proceeding
-//            if (pdfFile.isEmpty() || imageFile.isEmpty()) {
-//                System.out.println("Error: One of the files is missing.");
-//                return "error";
-//            }
-//
-//            // Save PDF with Book ID as Name
-//            String pdfFileName = bookId + "_" + pdfFile.getOriginalFilename();
-//            File pdfDest = new File(pdfDir, pdfFileName);
-//            pdfFile.transferTo(pdfDest);
-//
-//            // Save Image with Book ID as Name
-//            String imageFileName = bookId + "_" + imageFile.getOriginalFilename();
-//            File imageDest = new File(imageDir, imageFileName);
-//            imageFile.transferTo(imageDest);
-//
-//            // Save Book Details in Database
-//            Books book = new Books(bookId, bookName, author, quantity, pdfFileName, imageFileName);
-//            userservice.addbooks(book);
-//
-//            return "redirect:/admin/updatedbookslist";  // Redirect to updated book list
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "error";  // Redirect to error page
-//        }
-//    }
-
-
-
-
 
     // Delete Book
     @PostMapping("/deleteBook")
@@ -371,7 +271,7 @@ public class AdminController {
         boolean hasBorrowedBooks = us.hasBorrowedBooks(userid);
 
         if (hasBorrowedBooks) {
-            // ✅ Step 2: Prevent deletion and show a message
+           
             request.getSession().setAttribute("deleteuser_error", "User cannot be deleted because they have borrowed books.");
             return "redirect:/admin/showuserslist";
         }
@@ -381,39 +281,43 @@ public class AdminController {
         return "redirect:/admin/showuserslist";
     }
     
+    //logout
     @GetMapping("/logout1")
     public String logout() {
         return"redirect:/login";
     }
-    
+    //back button
     @GetMapping("/moveback")
     public String moveback() {
         return "redirect:/admin/dashboardadmin";
     }
+    //backbutton
     @GetMapping("back")
     public String back() {
         return "redirect:/admin/dashboardadmin";
     }
     
-    
+    //load the chat page
     @GetMapping("/chat")
     public String adminChat(Model model) {
         List<Queries> allQueries = adminService.getAllQueries();
         model.addAttribute("queries", allQueries);
         return "adminChat";
     }
-
+    
+    //reply for the query
     @PostMapping("/replyquery")
     public String replyQuery(@RequestParam int queryId, @RequestParam String reply) {
         adminService.updateQueryReply(queryId, reply);
         return "redirect:/admin/chat";
     }
     
+    //previous page
     @GetMapping("/admindashboard")
     public String backbu() {
         return "redirect:/admin/dashboardadmin";
     }
-    
+    //clear chat
     @GetMapping("clearChat")
     public String clearch(HttpServletRequest request) {
         if (!isAdminLoggedIn(request)) {

@@ -25,7 +25,7 @@ public class LoginController {
         return "login";
     }
 
-    
+    //admin login
     @PostMapping("/adminLogin")
     public String adminLogin(@RequestParam int userid, @RequestParam String password, HttpServletRequest request,RedirectAttributes redirectAttributes) {
         if (216450323 == userid && "prem@2002".equals(password)) {
@@ -38,14 +38,10 @@ public class LoginController {
         }
     }
     
-   
+   //user login
     @PostMapping("/userLogin")
     public String userLogin(@RequestParam int userid, @RequestParam String password, HttpServletRequest request,RedirectAttributes redirectAttributes) {
-       
-        
-        
-        Users user = userservice.getUserById(userid);
-        
+        Users user = userservice.getUserById(userid);        
         if (user != null && user.getPassword().equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("loggedInUser", user);
