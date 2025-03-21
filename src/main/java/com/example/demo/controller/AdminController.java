@@ -112,36 +112,47 @@ public class AdminController {
             if (pdfFile != null && !pdfFile.isEmpty()) {
                 String uploadDir ="src/main/resources/static/books/pdf/";
                
+                // Ensure directory exists
                 File dir = new File(uploadDir);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
                 String fileName = bookid + "_" + pdfFile.getOriginalFilename();
                 String imagePath = request.getServletContext().getRealPath("/books/pdf/");
-                Path filePath = Paths.get(uploadDir + fileName);                
+                Path filePath = Paths.get(uploadDir + fileName);
+
+                
                 Files.copy(pdfFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // ✅ Store only file name (not full path)
                 book.setPdf(fileName);
             } else {
-                book.setPdf(null); 
+                book.setPdf(null); // Set to null if no file is uploaded
             }
-            // to save the image
+        
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageUploadDir = "src/main/resources/static/books/images/";
-             
+
+                // Ensure directory exists
                 File imageDir = new File(imageUploadDir);
                 if (!imageDir.exists()) {
                     imageDir.mkdirs();
                 }
 
+                // Generate a unique filename for Image
                 String imageFileName = bookid + "_" + imageFile.getOriginalFilename();
                 Path imageFilePath = Paths.get(imageUploadDir + imageFileName);
+
+                // Save Image file to system
                 Files.copy(imageFile.getInputStream(), imageFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // ✅ Store only file name (not full path)
                 book.setImagePath(imageFileName);
             } else {
-                book.setImagePath(null); 
+                book.setImagePath(null); // Set to null if no file is uploaded
             }
 
-           
+            // ✅ Save book to DB
             userservice.addbooks(book);
            
             request.getSession().setAttribute("message", "Book added successfully");
@@ -154,6 +165,9 @@ public class AdminController {
         return "redirect:/admin/bookslist";
     }
     
+
+
+
 
     // Delete Book
     @PostMapping("/deleteBook")
@@ -270,8 +284,9 @@ public class AdminController {
         }
         boolean hasBorrowedBooks = us.hasBorrowedBooks(userid);
 
+        
         if (hasBorrowedBooks) {
-           
+            // ✅ Step 2: Prevent deletion and show a message
             request.getSession().setAttribute("deleteuser_error", "User cannot be deleted because they have borrowed books.");
             return "redirect:/admin/showuserslist";
         }
@@ -281,43 +296,39 @@ public class AdminController {
         return "redirect:/admin/showuserslist";
     }
     
-    //logout
     @GetMapping("/logout1")
     public String logout() {
         return"redirect:/login";
     }
-    //back button
+    
     @GetMapping("/moveback")
     public String moveback() {
         return "redirect:/admin/dashboardadmin";
     }
-    //backbutton
     @GetMapping("back")
     public String back() {
         return "redirect:/admin/dashboardadmin";
     }
     
-    //load the chat page
+    
     @GetMapping("/chat")
     public String adminChat(Model model) {
         List<Queries> allQueries = adminService.getAllQueries();
         model.addAttribute("queries", allQueries);
         return "adminChat";
     }
-    
-    //reply for the query
+
     @PostMapping("/replyquery")
     public String replyQuery(@RequestParam int queryId, @RequestParam String reply) {
         adminService.updateQueryReply(queryId, reply);
         return "redirect:/admin/chat";
     }
     
-    //previous page
     @GetMapping("/admindashboard")
     public String backbu() {
         return "redirect:/admin/dashboardadmin";
     }
-    //clear chat
+    
     @GetMapping("clearChat")
     public String clearch(HttpServletRequest request) {
         if (!isAdminLoggedIn(request)) {
